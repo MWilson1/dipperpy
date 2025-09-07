@@ -15,7 +15,8 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "dipperpy"
 #version = "2025.8.29"
-dynamic = ["version"]
+version = "0.0.1"
+#dynamic = ["version"]
 #dynamic = ["version", "keywords"]
 authors = [
 	{name="Philip G. Judge" , email="judge@ucar.edu"},

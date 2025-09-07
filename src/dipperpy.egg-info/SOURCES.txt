@@ -5,7 +5,6 @@ src/dipperpy/__init__.py
 src/dipperpy/base.py
 src/dipperpy/missing.py
 src/dipperpy/plasma.py
-src/dipperpy/rhfast.py
 src/dipperpy/version.py
 src/dipperpy.egg-info/PKG-INFO
 src/dipperpy.egg-info/SOURCES.txt
