@@ -35,6 +35,19 @@ jobs:
           echo Add other actions to build,
           echo test, and deploy your project.
 
+  pypa-publish:
+    name: upload release to TestPyPI
+    runs-on: ubuntu-latest
+    environment: testpypi
+    permissions: 
+      id-token: write
+    steps:
+      - name: Publish package distributions to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+
+
   dump_contexts_to_log:
     runs-on: ubuntu-latest
     steps:
