@@ -11,9 +11,9 @@ except Exception:
 
     __version_usedate__ = True
     if __version_usedate__:
-        __version_info__ = ('2025','8', '29')
+        __version_info__ = ('2026','1', '14')
     else:
-        __version_info__ = ('0','0', '1')
+        __version_info__ = ('1','0', '1')
 
     __version__ = '.'.join(__version_info__)
     version = __version__

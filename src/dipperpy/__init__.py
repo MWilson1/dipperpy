@@ -4,7 +4,7 @@
 from .base import dipall, diprd, diprd_multi  # classes
 from .missing import missing  # functions
 #from .plasma import plasma
-import os
+from . import lightspinner
 from .version import __version__ , __version_usedate__ , version
 #__version__ = version.__version__
 

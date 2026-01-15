@@ -15,7 +15,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "dipperpy"
 #version = "2025.8.29"
-version = "0.0.1"
+version = "1.0.1"
 #dynamic = ["version"]
 #dynamic = ["version", "keywords"]
 authors = [

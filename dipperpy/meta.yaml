@@ -1,0 +1,51 @@
+{% set name = "dipperpy" %}
+{% set version = "1.0.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/dipperpy-{{ version }}.tar.gz
+  sha256: affa0623f51aefc1bf107555440c4cea084073f1f7e5983cc26ab3fc0e6dcede
+
+build:
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  number: 0
+
+requirements:
+  host:
+    - python >=3.0
+    - setuptools
+    - setuptools-scm
+    - os
+    - numpy
+    - scipy
+    - astropy
+    - matplotlib
+    - pip
+  run:
+    - python >=3.0
+    - os
+    - numpy
+    - scipy
+    - astropy
+    - matplotlib
+
+test:
+  imports:
+    - dipperpy
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  summary: Package performing spectral diagnostics and radiative transfer calculations
+  license: MIT
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - mwilson1

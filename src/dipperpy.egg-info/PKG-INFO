@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: dipperpy
-Version: 0.0.1
+Version: 1.0.1
 Summary: Package performing spectral diagnostics and radiative transfer calculations
 Author-email: "Philip G. Judge" <judge@ucar.edu>
 Maintainer-email: "Maurice L. Wilson" <mauricew@ucar.edu>

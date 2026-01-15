@@ -57,6 +57,7 @@ class dipall:
     #       RYDBERG=2*PI*PI*EM*EE*(EE/HH)*(EE/HH)*(EE/HH)/CC 
     #       ALPHA=2*PI*ee*ee/HH/CC   fine structure constant 
     # 
+    # MW: todo: astropy units
     ee=1.602189e-12
     hh=6.626176e-27
     cc=2.99792458e10
@@ -107,7 +108,7 @@ class dipall:
     def confirmdirs(dipperpy_imported=False):
 
         if 'XUVTOP' not in list(os.environ.keys()):
-            message_xuvtop = "\nSet path from (current) working directory to the 'dbase' directory with the variable:\n    os.environ['XUVTOP'] = ???\n"+f"    Example: os.environ['XUVTOP'] = '{'..' +os.path.sep+ 'dbase'}'"
+            message_xuvtop = "\nSet path from (current) working directory to the 'dbase' directory with the variable:\n    import os\n    os.environ['XUVTOP'] = ???\n"+f"    Example: os.environ['XUVTOP'] = '{'..' +os.path.sep+ 'dbase'}'"
             if dipperpy_imported:
                 warnings.warn(message_xuvtop+"\n")
             else:
@@ -132,7 +133,7 @@ class dipall:
     
 
     ####################################################################################################
-    def abmass(self, name):      # nominal
+    def abmass(self, name:str):      # nominal
         #
         # use: print(abmass('fe'))
         # 
@@ -304,7 +305,7 @@ class dipall:
     
     ####################################################################################################
     @staticmethod
-    def atomname(x):   # nominal
+    def atomname(x:int) -> str:   # nominal
         #
         #  use: atomname(6) will yield 'C'
 
@@ -313,7 +314,7 @@ class dipall:
    
     ####################################################################################################
     @staticmethod
-    def atomnum(x):    # nominal
+    def atomnum(x:str):    # nominal
         #
         # use: atomnm('c') will yield 6
 
@@ -365,7 +366,7 @@ class dipall:
         return a, bji, bij
 
     ####################################################################################################
-    def bbdata(self, ionnum):
+    def bbdata(self, ionnum:int) -> "atom['bb']":
         #
         #  
         # calculate an index for multiplets, get string variables for
@@ -507,7 +508,7 @@ class dipall:
 
 
     ####################################################################################################
-    def bbrd(self, file, ionnum):   # nominal
+    def bbrd(self, file, ionnum:int):   # nominal
         #
         # use: returns bb dict object from file for atom=6, ion=2 say (C II)
         #  bb dict contains data for bound-bound radiative transitions
@@ -523,7 +524,7 @@ class dipall:
         return bb
     
     ####################################################################################################
-    def bfrd(self, file, ionnum):    # nominal
+    def bfrd(self, file, ionnum:int):    # nominal
         #
         # use: returns bf dict object from file for atom=6, ion=2 say (C II)
         #  bf dict contains data for bound-free radiative transitions (photoionization)
@@ -542,7 +543,7 @@ class dipall:
 
     ####################################################################################################
     @staticmethod
-    def cea(iel,ionnum,te):
+    def cea(iel,ionnum:int,te):
         #
         #  Include excitation-autoionization according to AR85
         #
@@ -1097,10 +1098,21 @@ class dipall:
         return atom
                
     ####################################################################################################
-    def lvlrd(self, file, ionnum):   # beta, check addition of next ion stage
+    def lvlrd(self, file, ionnum):   # beta, check addition of next ion stage   
         #
         # read energy levels from database file and return in dict lvl
         #
+        '''
+        Page 27 (p.40 PDF) of the HAOS-DIPER guide: 
+        spectroscopic term = (2S+1)LP, where L = orbital quantum number and P is parity (0=even & 1=odd).  The S label/key later shown is = 2S+1.
+
+        dictionary keys
+        ----------------
+        e: energy of level in units of cm^-1
+        lifetime: s^-1
+        
+
+        '''
         atomN = self.atomN
         #ions = self.ionnum
         ions = ionnum
@@ -1119,7 +1131,7 @@ class dipall:
             lvlnext=res.fetchone()
             if(lvlnext != None):
                 ipot=self.ipotl(ions)
-                lvlnext['e']+= ipot * dipall.ee / dipall.hh / dipall.cc
+                lvlnext['e']+= ipot * dipall.ee / dipall.hh / dipall.cc  # MW: todo: astropy units
                 lvlnext['meta']=1
                 lvl.append(lvlnext) 
         conn.close()
@@ -1572,7 +1584,7 @@ class dipall:
         # nstart=nstar
         print('n start is ')
         #
-        #print(nstart)
+        print(nstart)
         n = nstart*1.
         elim=1.e-4
         emax=1
@@ -1986,6 +1998,7 @@ class dipall:
         rhs[isum]=1.
         np.set_printoptions(precision=1)
         sol = np.linalg.solve(lhs,rhs)
+        print('sol', type(sol), np.shape(sol) , sol ) # debug
         #
         # emission line cooefficients
         #
@@ -1999,6 +2012,7 @@ class dipall:
         up = np.array(self.dict2array(bb,'j',int))
         lo = np.array(self.dict2array(bb,'i',int))
 
+        print('up', up)
         eps= hh*cc/w/4/pi * sol[up]*a
         w*=1.e8 # AA
         mx=np.max(eps)
@@ -2366,7 +2380,7 @@ class diprd(dipall):
         #
 
         self.atomN = atomN
-        self.boundonly = boundonly
+        self.boundonly = copy.copy( boundonly )
         self.dipperpy_regime = dipperpy_regime
         self.dipperpy_approx = dipperpy_approx
         self.verbose = verbose
@@ -2473,8 +2487,9 @@ class diprd_multi(dipall):    # alpha
         mn=min(ions)
         mx=max(ions)
         if(mn < 0 or mx > atomN):
-            print('diprd_multi: ions out of range ',ions, ' for ', atomN, ' -- quit()')
-            quit()
+            #print('diprd_multi: ions out of range ',ions, ' for ', atomN, ' -- quit()')
+            #quit()
+            raise ValueError('diprd_multi: ions out of range ',ions, ' for ', atomN)
         #dir=str( dipall.dipperpy_dbdir )
         reg=self.regime()
         boundonly=False # PGJ by default include ion above
