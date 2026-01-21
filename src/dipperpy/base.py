@@ -57,7 +57,6 @@ class dipall:
     #       RYDBERG=2*PI*PI*EM*EE*(EE/HH)*(EE/HH)*(EE/HH)/CC 
     #       ALPHA=2*PI*ee*ee/HH/CC   fine structure constant 
     # 
-    # MW: todo: astropy units
     ee=1.602189e-12
     hh=6.626176e-27
     cc=2.99792458e10
@@ -98,37 +97,46 @@ class dipall:
 
 
 
-    def __init__(self):
+    def __init__(self, dipperpy_importing=False):
         #pass
-        self.renewdirs()
+        self.renewdirs(dipperpy_importing)
+
 
 
     ####################################################################################################
     @staticmethod
-    def confirmdirs(dipperpy_imported=False):
+    def confirmdirs(dipperpy_importing=False):
+        
+        givepass = False
 
         if 'XUVTOP' not in list(os.environ.keys()):
-            message_xuvtop = "\nSet path from (current) working directory to the 'dbase' directory with the variable:\n    import os\n    os.environ['XUVTOP'] = ???\n"+f"    Example: os.environ['XUVTOP'] = '{'..' +os.path.sep+ 'dbase'}'"
-            if dipperpy_imported:
-                warnings.warn(message_xuvtop+"\n")
+            message_xuvtop = "\n\nSet path from (current) working directory to the 'dbase' directory with the variable:\n    import os\n    os.environ['XUVTOP'] = ???\n"+f"    Example: os.environ['XUVTOP'] = '{'..' +os.path.sep+ 'dbase'}'"
+            if dipperpy_importing:
+                warnings.warn(message_xuvtop+"\n", UserWarning)
+                givepass = True
             else:
                 raise FileNotFoundError(message_xuvtop)
         else:
-            if os.path.isdir( os.environ['XUVTOP'] ) is False or 'dbase' not in os.environ['XUVTOP']:
-                message_dbase = f"\nWrong path set for os.environ['XUVTOP'] ('{os.environ['XUVTOP']}')"+f"\nThe environment variable string, os.environ['XUVTOP'], should go from the current directory ('{os.getcwd()}') and lead to the 'dbase' directory!"
-                if dipperpy_imported:
-                    warnings.warn(message_dbase+"\n")
+            if os.path.isdir( os.environ['XUVTOP'] ) is False:# or 'dbase' not in os.environ['XUVTOP']:
+                message_dbase = f"\n\nWrong path set for os.environ['XUVTOP'] ('{os.environ['XUVTOP']}')"+f"\nThe environment variable string, os.environ['XUVTOP'], should go from the current directory ('{os.getcwd()}') and lead to the 'dbase' directory!"
+                if dipperpy_importing:
+                    warnings.warn(message_dbase+"\n", UserWarning)
                 else:
                     raise FileNotFoundError(message_dbase)
-        return
+
+        return givepass
 
 
-    def renewdirs(self):
+    def renewdirs(self, dipperpy_importing=False):
 
-        dipall.confirmdirs()
-
-        self.dipperpy_dbdir= os.environ['XUVTOP']
-        self.dipperpy_spdir= os.path.join( pathlib.Path(self.dipperpy_dbdir).parent.resolve() , 'spectra' )
+        passgiven = dipall.confirmdirs(dipperpy_importing)
+        if dipperpy_importing and passgiven:
+            self.dipperpy_dbdir = '..' +os.path.sep+ 'dbase'
+            #
+        else:
+            self.dipperpy_dbdir = os.environ['XUVTOP']
+            #self.dipperpy_spdir= os.path.join( pathlib.Path(self.dipperpy_dbdir).parent.resolve() , 'spectra' )
+            #
         return
     
 
@@ -925,7 +933,6 @@ class dipall:
 
     ####################################################################################################
     # @staticmethod
-    #def iprd():   # nominal 
     def iprd(self):   # nominal 
         # reads in array of ionization potentials.  returns None when there is no data
         #text = open(  os.path.join( dipall.dipperpy_dbdir , 'mooreip.dat' )  )
@@ -957,7 +964,8 @@ class dipall:
             wtab
         except:
             self.renewdirs()
-            file= os.path.join( self.dipperpy_spdir , 'lisird_2008255.ascii' )
+            #file= os.path.join( self.dipperpy_spdir , 'lisird_2008255.ascii' )
+            file= os.path.join( self.dipperpy_dbdir , 'lisird_2008255.ascii' )
             data=ascii.read(file,delimiter=' ')
             wtab=data['wnm'][:]
             jtab=data['irradiance'][:]
@@ -1131,7 +1139,7 @@ class dipall:
             lvlnext=res.fetchone()
             if(lvlnext != None):
                 ipot=self.ipotl(ions)
-                lvlnext['e']+= ipot * dipall.ee / dipall.hh / dipall.cc  # MW: todo: astropy units
+                lvlnext['e']+= ipot * dipall.ee / dipall.hh / dipall.cc 
                 lvlnext['meta']=1
                 lvl.append(lvlnext) 
         conn.close()
@@ -1998,7 +2006,6 @@ class dipall:
         rhs[isum]=1.
         np.set_printoptions(precision=1)
         sol = np.linalg.solve(lhs,rhs)
-        print('sol', type(sol), np.shape(sol) , sol ) # debug
         #
         # emission line cooefficients
         #
@@ -2012,7 +2019,6 @@ class dipall:
         up = np.array(self.dict2array(bb,'j',int))
         lo = np.array(self.dict2array(bb,'i',int))
 
-        print('up', up)
         eps= hh*cc/w/4/pi * sol[up]*a
         w*=1.e8 # AA
         mx=np.max(eps)
@@ -2418,7 +2424,6 @@ class diprd(dipall):
             wl_ang=bb[kr]['wl']
             up=bb[kr]['j']
             lo=bb[kr]['i']
-            #print('up ',type(up))
             typ=bb[kr]['type']
             #
             # find levels associated with the transition

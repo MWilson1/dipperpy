@@ -16,6 +16,6 @@ else:
     print(f"DIPPERpy version {__version__}")
 
 
-dipall.confirmdirs(dipperpy_imported=True) # check path for XUVTOP
+dipall.confirmdirs(dipperpy_importing=True) # check path for XUVTOP
 
 

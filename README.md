@@ -58,6 +58,9 @@ available, and for accounting for the effects of missing atomic levels.
 ```
 $ tar -xvz -f DIPPERpy_dbase.tar.gz
     dbase/
+    dbase/78tnth83.dat
+    dbase/78tnth83.readme.txt
+    dbase/alphacena.fits
     dbase/ar85ci.dat
     dbase/ar85ct.dat
     dbase/Barklem_dfdata.dat
@@ -72,6 +75,8 @@ $ tar -xvz -f DIPPERpy_dbase.tar.gz
     dbase/ctab.dat
     dbase/fal.pickle
     dbase/htab.dat
+    dbase/lisird_2008255.ascii
+    dbase/lisird_2008255.info
     dbase/lvlsql.db
     dbase/mooreip.dat
     dbase/pf_Kurucz.input

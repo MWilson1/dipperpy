@@ -1,7 +1,7 @@
 ####################################################################################################
 # Plot isoelectronic sequence of Be- and B- like and C-like ions
 ####################################################################################################
-import dipper as dp
+import dipperpy as dp
 import numpy as np
 from matplotlib import pyplot as plt
 import time

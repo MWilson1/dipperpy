@@ -1,4 +1,1 @@
-dbase
 dipperpy
-examples
-spectra

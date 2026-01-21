@@ -63,8 +63,8 @@ for i in range(0,len(lvl),10):
 #plt.xlim(970,1180)
 
 mx=np.nanmax(nout)
-print(np.shape(nout))
-print(mx)
+#print(np.shape(nout))
+#print(mx)
 
 for i in range(len(lvl)):
     plt.plot(tlog,nout[:,i]/mx)
@@ -76,7 +76,7 @@ plt.ylabel('Carbon ions: relative level population')
 plt.savefig('demo1.pdf')
 plt.show()
 
-print(tlog)
+#print(tlog)
 
 print('Te Ne used  ',np.log10(te),np.log10(ne))
 ####################################################################################################

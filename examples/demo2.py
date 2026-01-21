@@ -28,7 +28,6 @@ dipperpy_regime=0
 dipperpy_approx=0
 dipall_init = dp.dipall()
 dipperpy_dbdir= dipall_init.dipperpy_dbdir
-dipperpy_spdir= dipall_init.dipperpy_spdir
 #
 np.set_printoptions(precision=2)
 plt.rcParams["figure.figsize"] = (18,6)
@@ -36,7 +35,7 @@ plt.rcParams["figure.figsize"] = (18,6)
 #
 print()
 print('Reading UV spectrum of Alpha Centauri')
-file=dipperpy_spdir + os.path.sep + 'alphacena.fits'
+file=dipperpy_dbdir + os.path.sep + 'alphacena.fits'
 hdul=fits.open(file)
 data = hdul[1].data # assuming the first extension is a table
 data=data[0]
@@ -59,7 +58,7 @@ print(dp.dipall.cc/1.e10)
 plt.plot(w,f,label='alpha Cen A Ayres')
 
 ####################################################################################################
-file=dipperpy_spdir+ os.path.sep + '78tnth83.dat'
+file=dipperpy_dbdir+ os.path.sep + '78tnth83.dat'
 d=ascii.read(file, guess=False, format='basic')
 w=d['wave']
 f=d['flux']
